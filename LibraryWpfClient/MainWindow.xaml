@@ -1,0 +1,123 @@
+<Window x:Class="LibraryWpfClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="图书管理系统" Height="700" Width="1000"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 顶部标题栏 -->
+        <Border Grid.Row="0" Background="#2196F3" Padding="12,10">
+            <Grid>
+                <TextBlock Text="图书管理系统" FontSize="22" FontWeight="Bold"
+                           Foreground="White" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock x:Name="TxtCurrentUser" FontSize="13" Foreground="#E3F2FD"
+                               VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <Button Content="退出登录" Click="BtnLogout_Click"
+                            FontSize="12" Foreground="White" Background="Transparent"
+                            BorderBrush="#E3F2FD" BorderThickness="1" Padding="10,4"
+                            Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 工具栏 -->
+        <Border Grid.Row="1" Background="#F5F5F5" Padding="12,8">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <TextBlock Text="分类筛选：" VerticalAlignment="Center" FontSize="13" Margin="0,0,6,0"/>
+                    <ComboBox x:Name="CmbCategory" Width="120" FontSize="13" SelectionChanged="CmbCategory_SelectionChanged"/>
+                    <TextBlock Text="搜索：" VerticalAlignment="Center" FontSize="13" Margin="18,0,6,0"/>
+                    <TextBox x:Name="TxtSearch" Width="160" FontSize="13" Padding="4,3"/>
+                    <Button Content="搜索" Click="BtnSearch_Click" Margin="6,0,0,0"
+                            Padding="12,4" FontSize="12" Cursor="Hand"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="+ 添加图书" Click="BtnAddBook_Click"
+                            Padding="12,5" FontSize="13" FontWeight="Bold"
+                            Foreground="White" Background="#4CAF50" BorderThickness="0"
+                            Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 图书列表 -->
+        <DataGrid Grid.Row="2" x:Name="DgBooks" Margin="8"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  SelectionMode="Single" CanUserSortColumns="True"
+                  AlternatingRowBackground="#F9F9F9" GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column" FontSize="13">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="书名" Binding="{Binding Title}" Width="*"/>
+                <DataGridTextColumn Header="作者" Binding="{Binding Author}" Width="120"/>
+                <DataGridTextColumn Header="ISBN" Binding="{Binding Isbn}" Width="140"/>
+                <DataGridTextColumn Header="分类" Binding="{Binding Category}" Width="90"/>
+                <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="80"/>
+                <DataGridTextColumn Header="借阅人" Binding="{Binding Borrower}" Width="90"/>
+                <DataGridTextColumn Header="借阅日期" Binding="{Binding BorrowDate}" Width="120"/>
+                <DataGridTemplateColumn Header="操作" Width="180">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="{Binding ActionText}" Click="BtnAction_Click"
+                                        Padding="8,3" FontSize="12" Margin="0,0,4,0"
+                                        Cursor="Hand" Background="#2196F3" Foreground="White" BorderThickness="0"/>
+                                <Button Content="删除" Click="BtnDelete_Click"
+                                        Padding="8,3" FontSize="12"
+                                        Cursor="Hand" Background="#F44336" Foreground="White" BorderThickness="0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- 底部状态栏 -->
+        <Border Grid.Row="3" Background="#E0E0E0" Padding="10,6">
+            <TextBlock x:Name="TxtStatus" Text="就绪" FontSize="12" Foreground="#555"/>
+        </Border>
+
+        <!-- 添加图书弹窗 -->
+        <Border x:Name="AddBookPanel" Visibility="Collapsed"
+                Background="#80000000" Grid.Row="0" Grid.RowSpan="4">
+            <Border Background="White" CornerRadius="8" Padding="25"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Width="420">
+                <StackPanel>
+                    <TextBlock Text="添加图书" FontSize="20" FontWeight="Bold"
+                               Foreground="#333" Margin="0,0,0,18"/>
+                    <TextBlock Text="书名" FontSize="13" Margin="0,0,0,4" Foreground="#333"/>
+                    <TextBox x:Name="TxtNewTitle" FontSize="13" Padding="8,5"
+                             BorderBrush="#CCC" BorderThickness="1"/>
+                    <TextBlock Text="作者" FontSize="13" Margin="0,10,0,4" Foreground="#333"/>
+                    <TextBox x:Name="TxtNewAuthor" FontSize="13" Padding="8,5"
+                             BorderBrush="#CCC" BorderThickness="1"/>
+                    <TextBlock Text="ISBN" FontSize="13" Margin="0,10,0,4" Foreground="#333"/>
+                    <TextBox x:Name="TxtNewIsbn" FontSize="13" Padding="8,5"
+                             BorderBrush="#CCC" BorderThickness="1"/>
+                    <TextBlock Text="分类" FontSize="13" Margin="0,10,0,4" Foreground="#333"/>
+                    <ComboBox x:Name="CmbNewCategory" FontSize="13" Padding="8,5"/>
+                    <TextBlock x:Name="TxtAddMessage" FontSize="12" Foreground="Red"
+                               Margin="0,8,0,0" Visibility="Collapsed"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                        <Button Content="确认添加" Click="BtnConfirmAdd_Click"
+                                Padding="16,6" FontSize="13" FontWeight="Bold"
+                                Foreground="White" Background="#4CAF50" BorderThickness="0"
+                                Cursor="Hand" Margin="0,0,10,0"/>
+                        <Button Content="取消" Click="BtnCancelAdd_Click"
+                                Padding="16,6" FontSize="13"
+                                Foreground="#333" Background="#E0E0E0" BorderThickness="0"
+                                Cursor="Hand"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</Window>

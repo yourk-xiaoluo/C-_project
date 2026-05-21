@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+option csharp_namespace = "LibraryGrpcService";
+
+package library;
+
+// 用户服务
+service UserService {
+  // 用户登录验证
+  rpc ValidateUser (ValidateUserRequest) returns (ValidateUserResponse);
+  // 用户注册
+  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
+  // 验证用户名是否已存在
+  rpc UserExists (UserExistsRequest) returns (UserExistsResponse);
+  // 验证用户名与邮箱是否匹配
+  rpc ValidateUserEmail (ValidateUserEmailRequest) returns (ValidateUserEmailResponse);
+  // 重置密码
+  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
+}
+
+message ValidateUserRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message ValidateUserResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message RegisterUserRequest {
+  string username = 1;
+  string password = 2;
+  string email = 3;
+}
+
+message RegisterUserResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message UserExistsRequest {
+  string username = 1;
+}
+
+message UserExistsResponse {
+  bool exists = 1;
+}
+
+message ValidateUserEmailRequest {
+  string username = 1;
+  string email = 2;
+}
+
+message ValidateUserEmailResponse {
+  bool success = 1;
+}
+
+message ResetPasswordRequest {
+  string username = 1;
+  string email = 2;
+  string newPassword = 3;
+}
+
+message ResetPasswordResponse {
+  bool success = 1;
+  string message = 2;
+}
